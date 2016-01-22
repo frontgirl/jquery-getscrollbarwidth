@@ -8,6 +8,27 @@
  */
 (function($) {
 	var scrollbarWidth = 0;
+	var getInternetExplorerVersion =
+		function getInternetExplorerVersion()
+		{
+			var rv = -1;
+			if (navigator.appName == 'Microsoft Internet Explorer')
+			{
+				var ua = navigator.userAgent;
+				var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+				if (re.exec(ua) != null)
+					rv = parseFloat( RegExp.$1 );
+			}
+			else if (navigator.appName == 'Netscape')
+			{
+				var ua = navigator.userAgent;
+				var re  = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+				if (re.exec(ua) != null)
+					rv = parseFloat( RegExp.$1 );
+			}
+			return rv;
+		};
+
 	$.getScrollbarWidth = function() {
 		if ( !scrollbarWidth ) {
 			if ( $.browser && $.browser.msie ) {
@@ -26,6 +47,13 @@
 				$div.parent().remove();
 			}
 		}
-		return scrollbarWidth;
+		var iever = getInternetExplorerVersion();
+
+		if ( iever == 10 || iever == 11){
+			return 0;
+		} else {
+			return scrollbarWidth;
+		}
+
 	};
 })(jQuery);
